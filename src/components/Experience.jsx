@@ -47,7 +47,7 @@ export const Experience = () => {
       <Environment preset={environment} />
       <group>
         <Model mode={modAction} />
-        <mesh position={[0, -0.25, 0]} scale={[4, 4, 4]} rotation-x={-Math.PI / 2}>
+        <mesh position={[0, 0.005, 0]} scale={[4, 4, 4]} rotation-x={-Math.PI / 2}>
           <planeGeometry />
           <meshStandardMaterial color={floorColor} />
         </mesh>

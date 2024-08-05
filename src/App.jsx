@@ -3,7 +3,6 @@ import { Experience } from "./components/Experience";
 import { Scroll, ScrollControls } from "@react-three/drei";
 import { LoadingScreen } from "./helper/LoadingScreen";
 import Navigation from "./components/Navigation";
-import About from "./pages/About";
 import { Suspense, useEffect, useState } from "react";
 import { Interface } from "./helper/Interface";
 import { Leva } from "leva";

@@ -46,12 +46,30 @@ export const Interface = (props) => {
 
 const AboutSection = (props) => {
   const { setSection } = props;
+  const anim = useRef();
+  const hire = useRef();
+  useGSAP(()=>{
+    gsap.to(anim.current,{
+      x:20,
+      duration:0.4,
+      yoyo:true,
+      repeat:-1,
+      delay:0.2
+    })
+    gsap.to(hire.current,{
+      y:10,
+      duration:0.4,
+      yoyo:true,
+      repeat:-1,
+      delay:0.2
+    })
+  })
   return (
     <Section mobileTop>
       <h1 className="text-4xl md:text-6xl font-extrabold leading-snug mt-8 md:mt-0">
         Hi, I'm
         <br />
-        <span className="bg-white px-1 italic">Abhishek Dubey</span>
+        <div ref={anim} className="bg-transparent px-1 italic">Abhishek Dubey</div>
       </h1>
       <motion.p
         className="text-lg text-gray-600 mt-4"
@@ -73,6 +91,7 @@ const AboutSection = (props) => {
         come explore who am I?
       </motion.p>
       <motion.button
+        ref={hire}
         onClick={() => setSection(3)}
         className={`bg-indigo-600 text-white py-4 px-8 
       rounded-lg font-bold text-lg mt-4 md:mt-16`}
@@ -89,7 +108,7 @@ const AboutSection = (props) => {
           delay: 2,
         }}
       >
-        Contact me
+        Hire
       </motion.button>
     </Section>
   );
