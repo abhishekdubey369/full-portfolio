@@ -6,6 +6,9 @@ import Navigation from "./components/Navigation";
 import About from "./pages/About";
 import { Suspense, useEffect, useState } from "react";
 import { Interface } from "./helper/Interface";
+import { Leva } from "leva";
+import { MotionConfig } from "framer-motion";
+import { framerMotionConfig } from "./utils/config";
 
 function App() {
 
@@ -20,6 +23,7 @@ function App() {
   return (
     <>
       <LoadingScreen started={started} setStarted={setStarted} />
+
       {
         started && (
           <Navigation setMenuOpened={setMenuOpened} setSection={setSection} menuOpened={menuOpened} />
@@ -30,6 +34,10 @@ function App() {
           <color attach="background" args={["#feabces"]}  />
         )
       }
+      <MotionConfig
+        transition={{
+          ...framerMotionConfig
+        }}>
       <Canvas shadows camera={{ position: [3, 3, 3], fov: 60 }}>
         <ScrollControls pages={4} damping={0.1}>
           <Scroll>
@@ -46,6 +54,8 @@ function App() {
           </Scroll>
         </ScrollControls>
       </Canvas>
+      </MotionConfig>
+      <Leva hidden/>
     </>
   );
 }

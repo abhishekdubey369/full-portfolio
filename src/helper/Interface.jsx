@@ -1,7 +1,7 @@
 import { ValidationError, useForm } from "@formspree/react";
 import { motion } from "framer-motion";
-import { useAtom } from "jotai";
-import { currentProjectAtom, projects } from "./Projects";
+import { mouseEnter , mouseExit , mouseMove} from "../utils/guitar";
+import { useRef , useState , useEffect} from "react";
 
 const Section = (props) => {
   const { children, mobileTop } = props;
@@ -178,32 +178,34 @@ const SkillsSection = () => {
 };
 
 const ProjectsSection = () => {
-  const [currentProject, setCurrentProject] = useAtom(currentProjectAtom);
+  const svgRef = useRef();
+  const [centerWidth, setCenterWidth] = useState(window.innerWidth / 2);
+  const pathd = `M 40 20 Q ${centerWidth} 20 ${2*centerWidth-100} 20`
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setCenterWidth(window.innerWidth / 2);
+    };
 
-  const nextProject = () => {
-    setCurrentProject((currentProject + 1) % projects.length);
-  };
+    window.addEventListener('resize', handleResize);
 
-  const previousProject = () => {
-    setCurrentProject((currentProject - 1 + projects.length) % projects.length);
-  };
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <Section>
-      <div className="flex w-full h-full gap-8 items-center justify-center">
-        <button
-          className="hover:text-indigo-600 transition-colors"
-          onClick={previousProject}
-        >
-          ← Previous
-        </button>
+      <div className="fixed w-full items-center justify-center">
+      <div className="flex w-full items-center justify-center">
         <h2 className="text-3xl md:text-5xl font-bold">Projects</h2>
-        <button
-          className="hover:text-indigo-600 transition-colors"
-          onClick={nextProject}
-        >
-          Next →
-        </button>
+      </div>
+      <div className="flex w-full" onMouseEnter={(dets)=>mouseEnter(dets,svgRef)} onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
+        <svg  className="w-full" height={40} preserveAspectRatio="none">
+          <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
+        </svg>
+      </div>
       </div>
     </Section>
   );

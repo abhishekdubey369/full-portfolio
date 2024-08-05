@@ -25,6 +25,7 @@
     "autoprefixer": "^10.4.20",
     "framer-motion": "^11.3.21",
     "framer-motion-3d": "^11.3.21",
+    "gsap": "^3.12.5",
     "jotai": "^2.9.1",
     "postcss": "^8.4.40",
     "react-router-dom": "^6.26.0",
