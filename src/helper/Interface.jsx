@@ -287,27 +287,27 @@ const ProjectsSection = () => {
 };
 
 const ContactSection = () => {
-  const svgRef = useRef()
+  const svgRef = useRef();
   const [centerWidth, setCenterWidth] = useState(window.innerWidth / 2);
-  const pathd = `M 0 40 Q 150 40 300 40`
-  const mouseMove = (dets,ref)=>{
-    let path = `M 0 40 Q 150 ${dets.clientX} 300 40`;
-
-      gsap.to(svgRef.current,{
-        attr:{d:path},
-        ease:"power3.out"
-      })
-  }
-  const mouseExit = (dets,ref)=>{
-    let path = `M 0 40 Q 150 ${dets.clientX} 300 40`;
-
-      gsap.to(svgRef.current,{
-        attr:{d:pathd},
-        duration:0.8,
-        ease:"elastic.out(1,0.2)"
-      })
-  }
+  const pathd = `M 0 40 Q 150 40 300 40`;
   
+  const mouseMove = (dets, ref) => {
+    let path = `M 0 40 Q 150 ${dets.clientX} 300 40`;
+    gsap.to(svgRef.current, {
+      attr: { d: path },
+      ease: "power3.out"
+    });
+  };
+
+  const mouseExit = (dets, ref) => {
+    let path = `M 0 40 Q 150 ${dets.clientX} 300 40`;
+    gsap.to(svgRef.current, {
+      attr: { d: pathd },
+      duration: 0.8,
+      ease: "elastic.out(1,0.2)"
+    });
+  };
+
   useEffect(() => {
     const handleResize = () => {
       setCenterWidth(window.innerWidth / 2);
@@ -320,21 +320,32 @@ const ContactSection = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
+
   const [state, handleSubmit] = useForm("mayzgjbd");
+
   return (
     <Section>
       <h2 className="text-3xl md:text-5xl font-bold">Contact me</h2>
-      <div className="flex w-full"  onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
-        <svg  className="w-full" height={80} preserveAspectRatio="none">
+      <div className="flex w-full" onMouseLeave={(dets) => mouseExit(dets, svgRef)} onMouseMove={(dets) => mouseMove(dets, svgRef)}>
+        <svg className="w-full" height={80} preserveAspectRatio="none">
           <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
         </svg>
       </div>
       <div className="mt-8 p-8 rounded-md bg-white bg-opacity-50 w-96 max-w-full">
         {state.succeeded ? (
-          <p className="text-gray-900 text-center">Thanks for your message !</p>
+          <div>
+            <p className="text-gray-900 text-center">Thanks for your message!</p>
+            <p className="text-gray-900 text-center"> Sorry , deploying Backend wasn't free :)</p>
+            <p className="text-gray-900 text-center">Reach Out to me!</p>
+            <div className="flex justify-center space-x-4 mt-4">
+              <a href="mailto:abhishek.d.pro@gmail.com" className="text-blue-600 hover:text-red-200">Email</a>
+              <a href="https://www.linkedin.com/in/asdts" className="text-blue-600 hover:text-red-200">LinkedIn</a>
+              <a href="https://github.com/abhishekdubey369" className="text-blue-600 hover:text-red-200">GitHub</a>
+            </div>
+          </div>
         ) : (
           <form onSubmit={handleSubmit}>
-            <label for="name" className="font-medium text-gray-900 block mb-1">
+            <label htmlFor="name" className="font-medium text-gray-900 block mb-1">
               Name
             </label>
             <input
@@ -344,7 +355,7 @@ const ContactSection = () => {
               className="block w-full rounded-md border-0 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 p-3"
             />
             <label
-              for="email"
+              htmlFor="email"
               className="font-medium text-gray-900 block mb-1 mt-8"
             >
               Email
@@ -362,7 +373,7 @@ const ContactSection = () => {
               errors={state.errors}
             />
             <label
-              for="email"
+              htmlFor="message"
               className="font-medium text-gray-900 block mb-1 mt-8"
             >
               Message
@@ -378,7 +389,7 @@ const ContactSection = () => {
             />
             <button
               disabled={state.submitting}
-              className="bg-indigo-600 text-white py-4 px-8 rounded-lg font-bold text-lg mt-16 "
+              className="bg-indigo-600 text-white py-4 px-8 rounded-lg font-bold text-lg mt-16"
             >
               Submit
             </button>
