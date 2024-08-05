@@ -220,7 +220,13 @@ const SkillsSection = () => {
     <Section>
       <motion.div className="w-full" whileInView={"visible"}>
         <h2 className="text-3xl md:text-5xl font-bold text-white">Skills</h2>
-        <div className="flex w-full"  onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
+        <div 
+          className="flex w-full"  
+          onMouseLeave={(dets)=>mouseExit(dets,svgRef)} 
+          onMouseMove={(dets)=>mouseMove(dets,svgRef)}
+          onTouchEnd={(e)=>mouseMove(e.changedTouches[0],svgRef)}
+          onTouchMove={(e)=>mouseMove(e.touches[0],svgRef)}
+          >
         <svg  className="w-full" height={80} preserveAspectRatio="none">
           <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
         </svg>
@@ -359,7 +365,13 @@ const ProjectsSection = () => {
       <div className="flex w-full items-center justify-center">
         <h2 className="text-3xl md:text-5xl font-bold">Projects</h2>
       </div>
-      <div className="flex w-full"  onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
+      <div 
+        className="flex w-full"  
+        onMouseLeave={(dets)=>mouseExit(dets,svgRef)} 
+        onMouseMove={(dets)=>mouseMove(dets,svgRef)}
+        onTouchEnd={(e)=>mouseMove(e.changedTouches[0],svgRef)}
+        onTouchMove={(e)=>mouseMove(e.touches[0],svgRef)}
+        >
         <svg  className="w-full" height={80} preserveAspectRatio="none">
           <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
         </svg>
@@ -371,7 +383,7 @@ const ProjectsSection = () => {
         onMouseUp={(dets)=>handleOnUp(dets)}
         onMouseMove={(dets)=>handleOnMove(dets)}
         onTouchStart={(e) => handleOnDown(e.touches[0])}
-        onTouchEnd={(e) => handleOnUp(e.touches[0])}
+        onTouchEnd={(e) => handleOnUp(e.changedTouches[0])}
         onTouchMove={(e) => handleOnMove(e.touches[0])}
         className="absolute left-1/2 top-1/2 flex gap-[4vmin] transform translate-x-[-10%] translate-y-[25%] select-none"
         data-mouse-down-at="0"
@@ -451,6 +463,7 @@ const ContactSection = () => {
       <div className="flex w-full" 
         onMouseLeave={(dets) => mouseExit(dets, svgRef)} 
         onMouseMove={(dets) => mouseMove(dets, svgRef)}
+        onTouchEnd={(dets)=>mouseExit(e.changedTouches[0],svgRef)}
         onTouchMove={(e)=>mouseMove(e.touches[0],svgRef)}
       >
         <svg className="w-full" height={80} preserveAspectRatio="none">
