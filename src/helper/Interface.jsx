@@ -34,8 +34,43 @@ const Section = (props) => {
 
 export const Interface = (props) => {
   const { setSection } = props;
+  let prev = 0;
+  const touchStartY = useRef(0);
+
+  const handleTouchStart = (event) => {
+    touchStartY.current = event.touches[0].clientY;
+  };
+
+  const handleTouchMove = (event) => {
+    const touchEndY = event.touches[0].clientY;
+    const touchDiff = touchStartY.current - touchEndY;
+
+    if (touchDiff > 0) {
+      // Swiping up
+      prev = Math.min(prev + 1, 3);
+    } else {
+      // Swiping down
+      prev = Math.max(prev - 1, 0);
+    }
+    setSection(prev);
+  };
+
+  const handleScroll = (event) => {
+    if (event.deltaY > 0) {
+      // Scrolling down
+      prev = Math.min(prev + 1, 3);
+    } else {
+      // Scrolling up
+      prev = Math.max(prev - 1, 0);
+    }
+    setSection();
+  };
   return (
-    <div className="flex flex-col items-center w-screen">
+    <div className="flex flex-col items-center w-screen" 
+      onTouchStart={(e)=>handleTouchStart(e)}
+      onTouchMove={(e)=>handleTouchMove(e)}
+      onWheel={handleScroll}
+    >
       <AboutSection setSection={setSection} />
       <SkillsSection />
       <ProjectsSection />
@@ -236,6 +271,52 @@ const SkillsSection = () => {
 };
 
 const ProjectsSection = () => {
+  const trackRef = useRef(null);
+  const [mouseDownAt, setMouseDownAt] = useState(0);
+  const [prevPercentage, setPrevPercentage] = useState(0);
+  const [percentage, setPercentage] = useState(0);
+
+  const handleOnDown = (e) => {
+    // console.log(e.clientX);
+    setMouseDownAt(e.clientX);
+  };
+
+  const handleOnUp = (e) => {
+    // console.log("up");
+    setMouseDownAt(0);
+    setPrevPercentage(Math.max(Math.min(-(percentage),0),-400));
+  };
+
+  const handleOnMove = (e) => {
+    // console.log("mouseDwn")
+    // console.log(mouseDownAt);
+    if (mouseDownAt === 0) return;
+
+    const mouseDelta = mouseDownAt - e.clientX;
+    // console.log(mouseDelta);
+    const maxDelta = window.innerWidth / 2;
+    // console.log(maxDelta);
+    const percentageDelta = (mouseDelta / maxDelta) * -100;
+    const nextPercentageUnconstrained = prevPercentage + percentageDelta;
+    const nextPercentage = Math.max(Math.min(nextPercentageUnconstrained, 0), -400);
+    setPercentage(nextPercentage);
+
+    if (trackRef.current) {
+      gsap.to(trackRef.current, {
+        duration: 1, // Duration of the animation in seconds
+        xPercent: nextPercentage, // Translate the element along the x-axis
+        yPercent: 10, // Translate the element along the y-axis
+      });
+      const images = trackRef.current.getElementsByClassName('image');
+  for (const image of images) {
+    gsap.to(image, {
+      duration: 1, // Duration of the animation in seconds
+      objectPosition: `${100 + nextPercentage}% center`, // Change the object position
+    });
+  }
+    }
+  };
+
   const svgRef = useRef();
   const [centerWidth, setCenterWidth] = useState(window.innerWidth / 2);
   const pathd = `M 40 40 Q ${centerWidth} 40 ${2*centerWidth-100} 40`
@@ -281,6 +362,44 @@ const ProjectsSection = () => {
           <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
         </svg>
       </div>
+      <div
+        id="image-track"
+        ref={trackRef}
+        onMouseDown={(dets)=>handleOnDown(dets)}
+        onMouseUp={(dets)=>handleOnUp(dets)}
+        onMouseMove={(dets)=>handleOnMove(dets)}
+        onTouchStart={(e) => handleOnDown(e.touches[0])}
+        onTouchEnd={(e) => handleOnUp(e.touches[0])}
+        onTouchMove={(e) => handleOnMove(e.touches[0])}
+        className="absolute left-1/2 top-1/2 flex gap-[4vmin] transform translate-x-[-10%] translate-y-[25%] select-none"
+        data-mouse-down-at="0"
+        data-prev-percentage="0"
+      >
+        <img
+          className="image w-[40vmin] h-[36vmin] object-cover object-[100%_center]"
+          src="https://control.com/uploads/articles/PLCFirmware_1featured.jpg"
+          draggable="false"
+          alt=""
+        />
+        <img
+          className="image w-[40vmin] h-[36vmin] object-cover object-[100%_center]"
+          src="https://www.radar-tech.in/wp-content/uploads/2024/04/xunnamed.png.pagespeed.ic.Y1xngkJPfh.webp"
+          draggable="false"
+          alt=""
+        />
+        <img
+          className="image w-[40vmin] h-[36vmin] object-cover object-[100%_center]"
+          src="https://images.prismic.io//intuzwebsite/2caf3e7f-1704-42e2-908f-3d089da3e3ac_The+Ultimate+Guide+to+Android+App+Development.png?w=1200&q=75&auto=format,compress&fm=png8"
+          draggable="false"
+          alt=""
+        />
+        <img
+          className="image w-[40vmin] h-[36vmin] object-cover object-[100%_center]"
+          src="https://www.sectorlink.com/img/blog/web-devel-important.jpg"
+          draggable="false"
+          alt=""
+        />
+      </div>
       </div>
     </Section>
   );
@@ -325,8 +444,13 @@ const ContactSection = () => {
 
   return (
     <Section>
+      <div className="">
       <h2 className="text-3xl md:text-5xl font-bold">Contact me</h2>
-      <div className="flex w-full" onMouseLeave={(dets) => mouseExit(dets, svgRef)} onMouseMove={(dets) => mouseMove(dets, svgRef)}>
+      <div className="flex w-full" 
+        onMouseLeave={(dets) => mouseExit(dets, svgRef)} 
+        onMouseMove={(dets) => mouseMove(dets, svgRef)}
+        onTouchMove={(e)=>mouseMove(e.touches[0],svgRef)}
+      >
         <svg className="w-full" height={80} preserveAspectRatio="none">
           <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
         </svg>
@@ -395,6 +519,7 @@ const ContactSection = () => {
             </button>
           </form>
         )}
+      </div>
       </div>
     </Section>
   );
