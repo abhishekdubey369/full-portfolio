@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useRef , useState , useEffect} from "react";
 import gsap from "gsap";
 import { useGSAP } from '@gsap/react';
+import debounce from "lodash.debounce";
 
 const Section = (props) => {
   const { children, mobileTop } = props;
@@ -34,41 +35,43 @@ const Section = (props) => {
 
 export const Interface = (props) => {
   const { setSection } = props;
-  let prev = 0;
+  const prevRef = useRef(0);
   const touchStartY = useRef(0);
 
   const handleTouchStart = (event) => {
     touchStartY.current = event.touches[0].clientY;
   };
 
-  const handleTouchMove = (event) => {
+  const handleTouchMove = debounce((event) => {
     const touchEndY = event.touches[0].clientY;
     const touchDiff = touchStartY.current - touchEndY;
 
-    if (touchDiff > 0) {
+    if (touchDiff >= 30) {
       // Swiping up
-      prev = Math.min(prev + 1, 3);
-    } else {
+      prevRef.current = Math.min(prevRef.current + 1, 3);
+    } else if (touchDiff <= -30) {
       // Swiping down
-      prev = Math.max(prev - 1, 0);
+      prevRef.current = Math.max(prevRef.current - 1, 0);
     }
-    setSection(prev);
-  };
+    setSection(prevRef.current);
+  }, 100);
 
-  const handleScroll = (event) => {
-    if (event.deltaY > 0) {
+  const handleScroll = debounce((event) => {
+    if (event.deltaY >= 30) {
       // Scrolling down
-      prev = Math.min(prev + 1, 3);
-    } else {
+      prevRef.current = Math.min(prevRef.current + 1, 3);
+    } else if (event.deltaY <= -30) {
       // Scrolling up
-      prev = Math.max(prev - 1, 0);
+      prevRef.current = Math.max(prevRef.current - 1, 0);
     }
-    setSection();
-  };
+    setSection(prevRef.current);
+  }, 100);
+
   return (
-    <div className="flex flex-col items-center w-screen" 
-      onTouchStart={(e)=>handleTouchStart(e)}
-      onTouchMove={(e)=>handleTouchMove(e)}
+    <div
+      className="flex flex-col items-center w-screen"
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
       onWheel={handleScroll}
     >
       <AboutSection setSection={setSection} />
@@ -78,7 +81,6 @@ export const Interface = (props) => {
     </div>
   );
 };
-
 const AboutSection = (props) => {
   const { setSection } = props;
   const anim = useRef();
