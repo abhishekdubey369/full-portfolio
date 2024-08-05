@@ -8,6 +8,7 @@ import { Interface } from "./helper/Interface";
 import { Leva } from "leva";
 import { MotionConfig } from "framer-motion";
 import { framerMotionConfig } from "./utils/config";
+import { ScrollManager } from "./helper/ScrollManager";
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
         }}>
       <Canvas shadows camera={{ position: [3, 3, 3], fov: 60 }}>
         <ScrollControls pages={4} damping={0.1}>
+          <ScrollManager section={section} onSectionChange={setSection}/>
           <Scroll>
             <Suspense>
                 {started && (
