@@ -1,7 +1,8 @@
 import { ValidationError, useForm } from "@formspree/react";
 import { motion } from "framer-motion";
-import { mouseEnter , mouseExit , mouseMove} from "../utils/guitar";
 import { useRef , useState , useEffect} from "react";
+import gsap from "gsap";
+import { useGSAP } from '@gsap/react';
 
 const Section = (props) => {
   const { children, mobileTop } = props;
@@ -126,10 +127,48 @@ const skills = [
 ];
 
 const SkillsSection = () => {
+  const svgRef = useRef()
+  const [centerWidth, setCenterWidth] = useState(window.innerWidth / 2);
+  const pathd = `M 0 40 Q 100 40 200 40`
+  const mouseMove = (dets,ref)=>{
+    let path = `M 0 40 Q 100 ${dets.clientX} 200 40`;
+
+      gsap.to(svgRef.current,{
+        attr:{d:path},
+        ease:"power3.out"
+      })
+  }
+  const mouseExit = (dets,ref)=>{
+    let path = `M 0 40 Q 100 ${dets.clientX} 200 40`;
+
+      gsap.to(svgRef.current,{
+        attr:{d:pathd},
+        duration:0.8,
+        ease:"elastic.out(1,0.2)"
+      })
+  }
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setCenterWidth(window.innerWidth / 2);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   return (
     <Section>
       <motion.div className="w-full" whileInView={"visible"}>
         <h2 className="text-3xl md:text-5xl font-bold text-white">Skills</h2>
+        <div className="flex w-full"  onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
+        <svg  className="w-full" height={80} preserveAspectRatio="none">
+          <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
+        </svg>
+        </div>
         <div className="mt-8 space-y-4">
           {skills.map((skill, index) => (
             <div className="w-full md:w-64" key={index}>
@@ -180,7 +219,24 @@ const SkillsSection = () => {
 const ProjectsSection = () => {
   const svgRef = useRef();
   const [centerWidth, setCenterWidth] = useState(window.innerWidth / 2);
-  const pathd = `M 40 20 Q ${centerWidth} 20 ${2*centerWidth-100} 20`
+  const pathd = `M 40 40 Q ${centerWidth} 40 ${2*centerWidth-100} 40`
+  const mouseMove = (dets,ref)=>{
+    let path = `M 40 40 Q ${centerWidth} ${dets.clientX} ${2*centerWidth - 100} 40`;
+
+      gsap.to(svgRef.current,{
+        attr:{d:path},
+        ease:"power3.out"
+      })
+  }
+  const mouseExit = (dets,ref)=>{
+    let path = `M 40 40 Q ${centerWidth} ${dets.clientX} ${2*centerWidth - 100} 40`;
+
+      gsap.to(svgRef.current,{
+        attr:{d:pathd},
+        duration:0.8,
+        ease:"elastic.out(1,0.2)"
+      })
+  }
   
   useEffect(() => {
     const handleResize = () => {
@@ -201,8 +257,8 @@ const ProjectsSection = () => {
       <div className="flex w-full items-center justify-center">
         <h2 className="text-3xl md:text-5xl font-bold">Projects</h2>
       </div>
-      <div className="flex w-full" onMouseEnter={(dets)=>mouseEnter(dets,svgRef)} onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
-        <svg  className="w-full" height={40} preserveAspectRatio="none">
+      <div className="flex w-full"  onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
+        <svg  className="w-full" height={80} preserveAspectRatio="none">
           <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
         </svg>
       </div>
@@ -212,10 +268,48 @@ const ProjectsSection = () => {
 };
 
 const ContactSection = () => {
+  const svgRef = useRef()
+  const [centerWidth, setCenterWidth] = useState(window.innerWidth / 2);
+  const pathd = `M 0 40 Q 150 40 300 40`
+  const mouseMove = (dets,ref)=>{
+    let path = `M 0 40 Q 150 ${dets.clientX} 300 40`;
+
+      gsap.to(svgRef.current,{
+        attr:{d:path},
+        ease:"power3.out"
+      })
+  }
+  const mouseExit = (dets,ref)=>{
+    let path = `M 0 40 Q 150 ${dets.clientX} 300 40`;
+
+      gsap.to(svgRef.current,{
+        attr:{d:pathd},
+        duration:0.8,
+        ease:"elastic.out(1,0.2)"
+      })
+  }
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setCenterWidth(window.innerWidth / 2);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   const [state, handleSubmit] = useForm("mayzgjbd");
   return (
     <Section>
       <h2 className="text-3xl md:text-5xl font-bold">Contact me</h2>
+      <div className="flex w-full"  onMouseLeave={(dets)=>mouseExit(dets,svgRef)} onMouseMove={(dets)=>mouseMove(dets,svgRef)}>
+        <svg  className="w-full" height={80} preserveAspectRatio="none">
+          <path ref={svgRef} d={pathd} stroke="black" fill="transparent" />
+        </svg>
+      </div>
       <div className="mt-8 p-8 rounded-md bg-white bg-opacity-50 w-96 max-w-full">
         {state.succeeded ? (
           <p className="text-gray-900 text-center">Thanks for your message !</p>
